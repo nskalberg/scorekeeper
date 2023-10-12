@@ -1,0 +1,37 @@
+[
+    {
+        "user": 1,
+        "game": "mspacman",
+        "score": 125000,
+        "location": "quarter world",
+        "attempt": 2
+    },
+    {
+        "user": 1,
+        "game": "mspacman",
+        "score": 95000,
+        "location": "ground kontrol",
+        "attempt": 1
+    },
+    {
+        "user": 1,
+        "game": "galaga",
+        "score": 65000,
+        "location": "quarter world",
+        "attempt": 3
+    },
+    {
+        "user": 1,
+        "game": "dkong",
+        "score": 65000,
+        "location": "quarter world",
+        "attempt": 3
+    },
+    {
+        "user": 1,
+        "game": "rallyx",
+        "score": 3500,
+        "location": "quarter world",
+        "attempt": 3
+    }
+]
