@@ -12,12 +12,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchData, setSearchData] = useState([])
 
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/data")
-  //     .then((response) => response.json())
-  //     .then((json) => setScoreData(json))
-  // }, [])
-
   function handleChange(e) {
 
     if(e.target.name == "search-query"){
@@ -30,17 +24,6 @@ function App() {
       ...prevFormData,
       [e.target.name]: e.target.value
     }))
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    fetch("http://localhost:8000/data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    })
   }
 
   function handleSearch(e){
@@ -72,7 +55,6 @@ function App() {
   const searchElements = searchData.map(result => {
     return (
       <div className="game-marquee" style={{ backgroundImage: `url(${result.marquee})`}}>
-        {/* <div className="game-marquee-border"></div> */}
         <div className="info">
           <div className="game-title">{result.Description}</div>
           <div className="game-year">{result.year}</div>
@@ -100,14 +82,6 @@ function App() {
           </BrowserRouter>
         </div>
       </div>
-          {/* <form className="score-form">
-            <input name="game" type="" onChange={handleChange}></input>
-            <input name="score" type="" onChange={handleChange}></input>
-            <input name="location" type="" onChange={handleChange}></input>
-            <input name="attempt" type="" onChange={handleChange}></input>
-            <button name="submit-score" onClick={handleSubmit}>submit</button>
-          </form>
-          }
           {/* <form className="search-form">
             <input onChange={handleChange} name="search-query"></input>
             <button onClick={handleSearch}>search</button>

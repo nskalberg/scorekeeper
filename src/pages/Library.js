@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
-
 function Library(props){
 
     const [libraryData, setLibraryData] = useState([])
 
     var search = window.location.search.substring(1);
     const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
-
-    console.log(params)
 
     useEffect(() => {
         fetch("http://localhost:8000/library", {
@@ -22,8 +19,6 @@ function Library(props){
             .then(res => res.json())
             .then(json => setLibraryData(json))
     }, [])
-
-    console.log(libraryData)
 
     const libraryElements = libraryData.map(game => {
         return (

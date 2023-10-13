@@ -56,6 +56,7 @@ app.post("/game", (req, res) => {
 
   console.log(req.body)
   data.map(row => {
+    console.log(row)
     if(row.user.toString() == req.body.user && row.game == req.body.id){
       response.scores.push(row)
     }
@@ -153,7 +154,7 @@ app.post("/search", (req, res) => {
   compileResult()
 })
 
-app.post("/data", (req, res) => {
+app.post("/score", (req, res) => {
   const data = JSON.parse(fs.readFileSync(filepath));
   data.push(req.body)
   fs.writeFileSync(filepath, JSON.stringify(data, null, 4));

@@ -4,34 +4,74 @@
         "game": "mspacman",
         "score": 125000,
         "location": "quarter world",
-        "attempt": 2
+        "attempt": 2,
+        "date": "10/13/2023"
     },
     {
         "user": 1,
         "game": "mspacman",
         "score": 95000,
         "location": "ground kontrol",
-        "attempt": 1
+        "attempt": 1,
+        "date": "10/13/2023"
     },
     {
         "user": 1,
         "game": "galaga",
         "score": 65000,
         "location": "quarter world",
-        "attempt": 3
+        "attempt": 3,
+        "date": "10/13/2023"
     },
     {
         "user": 1,
         "game": "dkong",
         "score": 65000,
         "location": "quarter world",
-        "attempt": 3
+        "attempt": 3,
+        "date": "10/13/2023"
     },
     {
         "user": 1,
         "game": "rallyx",
         "score": 3500,
         "location": "quarter world",
-        "attempt": 3
+        "attempt": 3,
+        "date": "10/13/2023"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "200000",
+        "date": "10/13/2023",
+        "attempt": "3"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "200000",
+        "date": "10/13/2023",
+        "attempt": "3"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "200000",
+        "date": "10/13/2023",
+        "attempt": "3"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "125000",
+        "date": "10/13/2023",
+        "attempt": "1"
+    },
+    {
+        "user": "1",
+        "game": "galaga",
+        "score": "56000",
+        "date": "10/13/2023",
+        "attempt": "4"
     }
 ]
