@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Library from "./pages/Library"
 import Game from "./pages/Game"
+import Search from "./pages/Search"
+import Login from "./pages/Login"
 
 function App() {
 
@@ -11,57 +13,28 @@ function App() {
   const [formData, setFormData] = useState({})
   const [searchQuery, setSearchQuery] = useState("")
   const [searchData, setSearchData] = useState([])
+  const [loggedIn, setLoggedIn] = useState()
 
-  function handleChange(e) {
-
-    if(e.target.name == "search-query"){
-      setSearchQuery(e.target.value)
-      console.log(searchQuery)
-      return
-    }
-
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [e.target.name]: e.target.value
-    }))
-  }
-
-  function handleSearch(e){
-    e.preventDefault()
-    fetch("http://localhost:8000/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ query: searchQuery })
-    })
-      .then(response => response.json())
-      .then(json => {
-        setSearchData(json)
+  useEffect(() => {
+    if(localStorage.token){
+      const token = localStorage.token
+      fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token: token })
       })
-  }
-
-  const scoreTableElements = scoreData.map((row) => {
-    return (
-      <tr>
-        <td>{row.game}</td>
-        <td>{row.score}</td>
-        <td>{row.location}</td>
-        <td>{row.attempt}</td>
-      </tr>
-    )
-  })
-
-  const searchElements = searchData.map(result => {
-    return (
-      <div className="game-marquee" style={{ backgroundImage: `url(${result.marquee})`}}>
-        <div className="info">
-          <div className="game-title">{result.Description}</div>
-          <div className="game-year">{result.year}</div>
-        </div>
-      </div>
-    )
-  })
+        .then(res => res.json())
+        .then(json => {
+          if(json.message == "Token invalid"){
+            localStorage.removeItem("token")
+            return
+          }
+          //TODO: take user id and put it in localstorage
+        })
+    }
+  }, [])
 
   return (
     <>
@@ -76,25 +49,13 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/library" element={<Library property="value" />} />
-              {/* <Route path="/search" element={<Search />} /> */}
+              <Route path="/search" element={<Search />} />
               <Route path="/game" element={<Game />} />
+              <Route path="/login" element={<Login />} />
             </Routes>
           </BrowserRouter>
         </div>
       </div>
-          {/* <form className="search-form">
-            <input onChange={handleChange} name="search-query"></input>
-            <button onClick={handleSearch}>search</button>
-          </form> */}
-
-        {/* <div className="game-marquee">
-          <div className="info">
-          </div>
-        </div>
-
-          
-          */}
-          {searchElements}
     </>
     
   );

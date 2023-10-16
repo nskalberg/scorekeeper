@@ -66,56 +66,11 @@ input {
   background: #1a1a1a;
   border: 1px solid #e71d36;
   border-radius: 10px;
-  height: 75px;
-  margin-left: 13px;
   color: white;
+  height: 36px;
   width: auto;
+  padding-left: 10px
 }
-
-.search-form {
-  width: 100%;
-  height: 50px;
-  border-radius:  5px;
-  border: 3px solid #fff;
-}
-  
-.search-form input {
-    width: 370px;
-    padding: 15px 10px;
-    float: left;
-    color: #ccc;
-    border: 0;
-    background: transparent;
-    border-radius: 2px 0 0 3px;
-    &:focus {
-      outline: 0;
-      background:transparent;
-    }
-  }
-  
- .search-form button {
-    position: relative;
-    float: right;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    height: 50px;
-    width: 120px;
-    color: #fff;
-    background: transparent;
-    border-left: 2px solid #fff;
-    border-radius: 0 3px 3px 0;
-    &:hover {
-      background: #fff;
-      color:#444;
-    }
-    &:active {
-      box-shadow: 0px 0px 12px 0px rgba(225, 225, 225, 1);
-    }
-    &:focus {
-      outline: 0;
-    }
-  }  
 
 .game-marquee {
   width: 90vw;
@@ -198,7 +153,10 @@ h1 {
   height: 100px;
   width: 100%;
   border-radius: 10px;
-  background-color:#2a2e3d
+  background-color:#2a2e3d;
+  display:flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .high-score {
@@ -269,4 +227,61 @@ h1 {
   align-items: center;
   transition: 0.5s;
     transform: scale(0);
+}
+
+.search-form {
+
+}
+
+.search-content {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}
+
+.search-button {
+  background-color: #e71d36;
+  border-radius: 10px;
+  width: 25%;
+  margin-right: 13px;
+  display: flex;
+  justify-content: center;
+  margin-left: 13px;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+}
+
+.window {
+  height: 250px;
+  width: 100%;
+  border-radius: 10px;
+  background-color:#2a2e3d;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dynamic {
+  width: auto;
+  height: auto;
+  padding: 50px;
+  box-shadow: 2px 2px rgba(0,0,0,0.5);
+}
+
+button {
+  background-color:#e71d36;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 2px 2px rgba(0,0,0,0.5);
+  width: 100%;
+}
+
+.error-message {
+  color: #e71d36;
 }

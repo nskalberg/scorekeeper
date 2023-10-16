@@ -38,40 +38,5 @@
         "location": "quarter world",
         "attempt": 3,
         "date": "10/13/2023"
-    },
-    {
-        "user": "1",
-        "game": "mspacman",
-        "score": "200000",
-        "date": "10/13/2023",
-        "attempt": "3"
-    },
-    {
-        "user": "1",
-        "game": "mspacman",
-        "score": "200000",
-        "date": "10/13/2023",
-        "attempt": "3"
-    },
-    {
-        "user": "1",
-        "game": "mspacman",
-        "score": "200000",
-        "date": "10/13/2023",
-        "attempt": "3"
-    },
-    {
-        "user": "1",
-        "game": "mspacman",
-        "score": "125000",
-        "date": "10/13/2023",
-        "attempt": "1"
-    },
-    {
-        "user": "1",
-        "game": "galaga",
-        "score": "56000",
-        "date": "10/13/2023",
-        "attempt": "4"
     }
 ]

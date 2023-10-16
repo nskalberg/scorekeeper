@@ -6,47 +6,61 @@ const app = express();
 const fs = require('fs');
 const filepath = './data/data.json';
 const titleDataPath = './data/csvjson.json'
+const tokenData = './data/tokens.json'
+const userData = './data/users.json'
 
 app.use(cors());
 app.use(express.json());
 
-const config = {
-  user: 'nskalberg', // better stored in an app setting such as process.env.DB_USER
-  password: 'Pps713504!', // better stored in an app setting such as process.env.DB_PASSWORD
-  server: 'nskalberg.database.windows.net', // better stored in an app setting such as process.env.DB_SERVER
-  port: 1433, // optional, defaults to 1433, better stored in an app setting such as process.env.DB_PORT
-  database: 'scorekeeper', // better stored in an app setting such as process.env.DB_NAME
-  authentication: {
-      type: 'default'
-  },
-  options: {
-      encrypt: true
+function generateToken(n) {
+  var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var token = '';
+  for(var i = 0; i < n; i++) {
+      token += chars[Math.floor(Math.random() * chars.length)];
   }
+  return token;
 }
 
-console.log("Starting...");
-connectAndQuery();
+app.post("/login", (req, res) => {
+  const {username, password, token} = req.body
 
-async function connectAndQuery() {
-    try {
-        var poolConnection = await sql.connect(config);
+  const data =  JSON.parse(fs.readFileSync(userData))
+  const tokens = JSON.parse(fs.readFileSync(tokenData))
 
-        console.log("Reading rows from the Table...");
-        var resultSet = await poolConnection.request().query(`CREATE TABLE Scores (player int, score int)`);
+  console.log(req.body)
 
-        console.log(resultSet)
-
-        // close connection only when we're certain application is finished
-        poolConnection.close();
-    } catch (err) {
-        console.error(err.message);
+  if(token){
+    for(i = 0; i < tokens.length; i++){
+      if(token == tokens[i].token){
+        res.json(tokens[i])
+        return;
+      }
     }
-}
+    res.json({message: "Token invalid"})
+    return
+  }
 
-app.get("/data", (req, res) => {
-  const data = JSON.parse(fs.readFileSync(filepath));
-  res.json(data);
-});
+  for(i = 0; i < data.length; i++){
+    if(data[i].username == username && data[i].password == password){
+      const token = generateToken(10)
+      tokens.push({
+        token: token,
+        user: data[i].id
+      })
+      fs.writeFileSync(tokenData, JSON.stringify(tokens, null, 4));
+      res.json({
+        id: data[i].id,
+        token: token
+      })
+      return;
+    }
+  }
+
+  const err = new Error("Invalid credentials")
+  err.statusCode = 401
+  throw err
+
+})
 
 app.post("/game", (req, res) => {
   const data = JSON.parse(fs.readFileSync(filepath));
@@ -54,9 +68,7 @@ app.post("/game", (req, res) => {
     scores: []
   }
 
-  console.log(req.body)
   data.map(row => {
-    console.log(row)
     if(row.user.toString() == req.body.user && row.game == req.body.id){
       response.scores.push(row)
     }
@@ -66,9 +78,7 @@ app.post("/game", (req, res) => {
     .then(res => res.json())
     .then(json => {
       json.result.map(game => {
-        console.log(game)
         if(game.game_name == req.body.id){
-          console.log("IM here")
           response.gameData = game
           res.json(response)
         }
@@ -146,7 +156,6 @@ app.post("/search", (req, res) => {
 
   async function compileResult(){
     for(i = 0; i < 10; i++){
-      console.log(scoredTitles[i])
       await fetchData(scoredTitles[i])
     }
       res.json(result)
@@ -158,7 +167,7 @@ app.post("/score", (req, res) => {
   const data = JSON.parse(fs.readFileSync(filepath));
   data.push(req.body)
   fs.writeFileSync(filepath, JSON.stringify(data, null, 4));
-  res.json({ message: "Hello from server!" });
+  res.json({ message: "Score uploaded successfully." });
 });
 
 app.listen(8000, () => {
