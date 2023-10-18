@@ -305,7 +305,7 @@ button {
   position:absolute;
   justify-content: center;
   text-align:center;
-  font-size: 32px;
+  font-size: 24px;
   font-weight:bold;
   height: auto;
   width: auto;
@@ -326,7 +326,7 @@ button {
 }
 
 .subtext {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   margin-top: -10px;
 }

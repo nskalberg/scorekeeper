@@ -70,5 +70,29 @@
         "date": "10/18/2023",
         "attempt": "1",
         "token": "1KUEUXIRoF"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "100000",
+        "date": "10/13/2023",
+        "attempt": "1",
+        "token": "UkPoVxf7Ne"
+    },
+    {
+        "user": "1",
+        "game": "galaga",
+        "score": "95000",
+        "date": "10/14/2023",
+        "attempt": "2",
+        "token": "UkPoVxf7Ne"
+    },
+    {
+        "user": "1",
+        "game": "galaga",
+        "score": "78000",
+        "date": "10/15/2023",
+        "attempt": "2",
+        "token": "UkPoVxf7Ne"
     }
 ]

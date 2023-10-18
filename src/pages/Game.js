@@ -18,6 +18,27 @@ function Game(props) {
       user: params.user,
       game: params.id
     })
+    const [chartData, setChartData] = useState([])
+
+    useEffect(() => {
+      let result = []
+      const scoreDataSorted = scoreData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date) || parseInt(b.score) - parseInt(a.score))
+      for(var i = 0; i < scoreDataSorted.length; i++){
+        if(!result[0] || result[result.length-1][0] !== Date.parse(scoreDataSorted[i].date)){
+          
+          result.push([Date.parse(scoreDataSorted[i].date), parseInt(scoreDataSorted[i].score)])
+        }
+      }
+      setChartData(result)
+      var runningHighScore = 0
+      var runningHighScoreArray = []
+      result.map(score => {
+        if(score[1] > runningHighScore){
+          runningHighScore = score[1] // TODO FINISH THIS
+        }
+        runningHighScoreArray.push(score[0, runningHighScore])
+      })
+    }, [scoreData])
 
     function getScoreData() {
       fetch("http://localhost:8000/game", {
@@ -130,10 +151,8 @@ function Game(props) {
           {
             lineWidth: 3,
             color: "#e71d36",
-            data: scoreData.map(data => ([
-              new Date(data.date).getTime(),
-              parseInt(data.score)
-            ]))
+            data: chartData,
+            shadow: true
           }
         ]
       };
