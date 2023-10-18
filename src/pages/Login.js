@@ -22,7 +22,9 @@ function Login(){
                 }
             })
             .then(json => {
+                console.log(json)
                 localStorage.token = json.token
+                localStorage.user = json.id
                 if(!localStorage.redirect){
                     window.location.href = `http://localhost:3000/library?user=${json.id}`
                 }

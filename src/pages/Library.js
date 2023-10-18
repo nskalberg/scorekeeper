@@ -3,6 +3,12 @@ import { Link } from "react-router-dom"
 
 function Library(props){
 
+    console.log(Math.floor(Date.now() / 1000))
+
+    const { authorized } = props
+
+    console.log(authorized)
+
     const [libraryData, setLibraryData] = useState([])
 
     var search = window.location.search.substring(1);
@@ -14,11 +20,13 @@ function Library(props){
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({user: 1})
+            body: JSON.stringify({user: params.user})
         })
             .then(res => res.json())
             .then(json => setLibraryData(json))
     }, [])
+
+    console.log(libraryData)
 
     const libraryElements = libraryData.map(game => {
         return (

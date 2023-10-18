@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const levenshtein = require("js-levenshtein")
-const sql = require("mssql");
 const app = express();
 const fs = require('fs');
 const filepath = './data/data.json';
@@ -21,13 +20,53 @@ function generateToken(n) {
   return token;
 }
 
-app.post("/login", (req, res) => {
+app.post("/authorize", async (req, res) => {
+  const {token, user} = req.body
+  const tokens = JSON.parse(fs.readFileSync(tokenData))
+
+  for(t = 0; t < tokens.length; t++){
+    if(token == tokens[t].token && user == tokens[t].user){
+      if(tokens[t].expires > Math.floor(Date.now()/1000)){
+        res.status(200)
+        res.send({message: "Token valid"})
+        return
+      }
+    }
+  }
+
+  res.status(401)
+  res.send({message: "Token invalid"})
+
+})
+
+app.delete("/authorize", async (req, res) => {
+  const {token, user} = req.body
+  const tokens = JSON.parse(fs.readFileSync(tokenData))
+  var index, result
+  
+  console.log(tokens)
+
+  for(t = 0; t < tokens.length; t++){
+    if(token == tokens[t].token && user == tokens[t].user){
+      index = t
+    }
+  }
+  
+  if(tokens.length == 1){
+    result = []
+  } else {
+    result = tokens.splice(index, 1)
+  }
+
+  fs.writeFileSync(tokenData, JSON.stringify(result, null, 4));
+  res.send("Token deleted")
+})
+
+app.post("/login", async (req, res) => {
   const {username, password, token} = req.body
 
   const data =  JSON.parse(fs.readFileSync(userData))
   const tokens = JSON.parse(fs.readFileSync(tokenData))
-
-  console.log(req.body)
 
   if(token){
     for(i = 0; i < tokens.length; i++){
@@ -36,7 +75,8 @@ app.post("/login", (req, res) => {
         return;
       }
     }
-    res.json({message: "Token invalid"})
+    res.status(401)
+    res.send("Token invalid")
     return
   }
 
@@ -45,7 +85,8 @@ app.post("/login", (req, res) => {
       const token = generateToken(10)
       tokens.push({
         token: token,
-        user: data[i].id
+        user: data[i].id,
+        expires: Math.floor((Date.now()/1000)+86400)
       })
       fs.writeFileSync(tokenData, JSON.stringify(tokens, null, 4));
       res.json({
@@ -87,7 +128,7 @@ app.post("/game", (req, res) => {
 
 })
 
-app.post("/library", (req, res) => {
+app.post("/library", async (req, res) => {
   var result = []
   var response = []
 
@@ -100,21 +141,19 @@ app.post("/library", (req, res) => {
     }
   })
 
-  async function getGameData(game){
-      return fetch(`http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame&game_name=${game}`)
+  async function fetchData(game, index){
+    var promise = new Promise((resolve, reject) => {
+      fetch(`http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame&game_name=${game}`)
         .then(res => res.json())
-        .then(json => {
-          json.result.map(gameData => {
-            if(gameData.game_name == game){
-              response.push(gameData)
-            }
-          })
-        })
+        .then(json => resolve(json))
+    })
+    let result = await promise
+    response[index] = result.result[0]
   }
 
   async function compileResult(games) {
-    for(i = 0; i < games.length; i++){
-      await getGameData(games[i])
+    for(j = 0; j < games.length; j++){
+      await fetchData(games[j], j)
     }
     res.json(response)
   }
@@ -165,9 +204,21 @@ app.post("/search", (req, res) => {
 
 app.post("/score", (req, res) => {
   const data = JSON.parse(fs.readFileSync(filepath));
-  data.push(req.body)
-  fs.writeFileSync(filepath, JSON.stringify(data, null, 4));
-  res.json({ message: "Score uploaded successfully." });
+  const tokens = JSON.parse(fs.readFileSync(tokenData))
+
+  const { user, token } = req.body
+
+  for(row in tokens){
+    console.log(row)
+    if(tokens[row].token == token && tokens[row].user == user){
+      data.push(req.body)
+      fs.writeFileSync(filepath, JSON.stringify(data, null, 4));
+      res.json({ message: "Score uploaded successfully." });
+      return
+    }
+  }
+  res.status(401)
+  res.send({ message: "Not authorized"})
 });
 
 app.listen(8000, () => {

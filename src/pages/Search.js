@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 
 function Search(){
 
@@ -30,13 +31,16 @@ function Search(){
     console.log(searchData)
 
     const searchElements = searchData.map(result => {
+        console.log(result)
         return (
-          <div className="game-marquee" style={{ backgroundImage: `url(${result.marquee})`}}>
-            <div className="info">
-              <div className="game-title">{result.Description}</div>
-              <div className="game-year">{result.year}</div>
-            </div>
-          </div>
+            <Link to={`/game?id=${result.Roms}&user=${localStorage.user}`}>
+                <div className="game-marquee" style={{ backgroundImage: `url(${result.marquee})`}}>
+                    <div className="info">
+                    <div className="game-title">{result.Description}</div>
+                    <div className="game-year">{result.year}</div>
+                    </div>
+                </div>
+          </Link>
         )
       })
 

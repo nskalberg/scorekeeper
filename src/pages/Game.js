@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react"
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
-function Game() {
+function Game(props) {
+    
+
+    const {authorized, validateToken} = props
+
+    console.log(`Authorized: ${authorized}`)
 
     var search = window.location.search.substring(1);
     const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')  
@@ -37,7 +44,10 @@ function Game() {
         fetch("http://localhost:8000/score", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({
+            ...formData,
+            token: localStorage.token
+          })
         })
           .then(() => {
             getScoreData()
@@ -62,6 +72,20 @@ function Game() {
       getScoreData()
     }, [])
 
+    console.log(scoreData)
+
+    function averageScore() {
+      let result = 0
+      scoreData.map(data => {
+        result += parseInt(data.score)
+      })
+      result = result/scoreData.length
+      return Math.floor(result)
+    }
+
+    const highScore = () => Math.max(...scoreData.map(data => parseInt(data.score)))
+    console.log(highScore())
+
     const scoreTableElements = scoreData.map((row) => {
         return (
           <tr>
@@ -73,6 +97,47 @@ function Game() {
         )
       })
 
+      const options = {
+        chart: {
+          type: 'line',
+          backgroundColor: 'transparent'
+        },
+        title: {
+          text: 'score history',
+          style: {
+            color: "#e71d36",
+            fontSize: "12px"
+          }
+        },
+        yAxis: {
+          title: {
+              text: null
+          },
+          labels: {
+            enabled: false
+          },
+          gridLineColor: "#1a1a1a"
+        },
+        xAxis: {
+          labels: {
+            enabled: false
+          }
+        },
+        legend: {
+          enabled: false
+        },
+        series: [
+          {
+            lineWidth: 3,
+            color: "#e71d36",
+            data: scoreData.map(data => ([
+              new Date(data.date).getTime(),
+              parseInt(data.score)
+            ]))
+          }
+        ]
+      };
+
     return (
         <>
             <div className="game-marquee" style={{ backgroundImage: `url(${gameData.url_image_marquee})`}}>
@@ -81,27 +146,39 @@ function Game() {
                     <div className="game-year">{gameData.year}</div>
                 </div>
             </div>
-            <div id="add-score" name="add-score"className="banner add-score short">
-              <button id="initiateScore" name="initiate" onClick={handleAddScore} className="add-score-button">add score</button>
-              <div id="add-score-content" className="add-score-content">
-                <div className="add-score-inputs">
-                  <input onChange={handleChange} placeholder="score" className="add-score-game" name="score"></input>
-                  <input onChange={handleChange} placeholder="date" className="add-score-game" name="date"></input>
-                  <input onChange={handleChange} placeholder="attempt" className="add-score-game" name="attempt"></input>
+            {authorized && (
+              <div id="add-score" name="add-score"className="banner add-score short">
+                <button id="initiateScore" name="initiate" onClick={handleAddScore} className="add-score-button">add score</button>
+                <div id="add-score-content" className="add-score-content">
+                  <div className="add-score-inputs">
+                    <input onChange={handleChange} placeholder="score" className="add-score-game" name="score"></input>
+                    <input onChange={handleChange} placeholder="date" className="add-score-game" name="date"></input>
+                    <input onChange={handleChange} placeholder="attempt" className="add-score-game" name="attempt"></input>
+                  </div>
+                  <button id="finalizeScore" name="finalize" onClick={handleAddScore} className="add-score-button"></button>
                 </div>
-                <button id="finalizeScore" name="finalize" onClick={handleAddScore} className="add-score-button"></button>
+              </div>
+            )}
+            <div className="banner-group">
+              <div className="banner half">
+                <div className="high-score">
+                  {highScore()}
+                  <div className="subtext">
+                    high score
+                  </div>
+                </div>
+              </div>
+              <div className="banner half">
+                <div className="average-score">
+                  {averageScore()}
+                  <div className="subtext">
+                    average
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div className="banner">
-            <div className="high-score">
-              <div className="high-score-score">
-                100200
-              </div>
-              <div className="high-score-info">
-                ground kontrol
-              </div>
-            </div>
-          </div>
+            
             <table>
             <thead>
               <tr>
@@ -115,6 +192,9 @@ function Game() {
               {scoreTableElements}
             </tbody>
           </table>
+          <div className="window chart">
+            <HighchartsReact highcharts={Highcharts} options={options} />
+          </div>
         </>
     )
 

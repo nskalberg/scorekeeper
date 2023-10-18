@@ -38,5 +38,37 @@
         "location": "quarter world",
         "attempt": 3,
         "date": "10/13/2023"
+    },
+    {
+        "user": "1",
+        "game": "dkong",
+        "score": "125000",
+        "date": "10/18/2023",
+        "attempt": "3",
+        "token": "1KUEUXIRoF"
+    },
+    {
+        "user": "1",
+        "game": "dkong",
+        "score": "100000",
+        "date": "10/19/2023",
+        "attempt": "1",
+        "token": "1KUEUXIRoF"
+    },
+    {
+        "user": "1",
+        "game": "mspacman",
+        "score": "100000",
+        "date": "10/15/2023",
+        "attempt": "1",
+        "token": "1KUEUXIRoF"
+    },
+    {
+        "user": "1",
+        "game": "tron",
+        "score": "85000",
+        "date": "10/18/2023",
+        "attempt": "1",
+        "token": "1KUEUXIRoF"
     }
 ]

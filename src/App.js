@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Library from "./pages/Library"
 import Game from "./pages/Game"
 import Search from "./pages/Search"
@@ -13,44 +13,84 @@ function App() {
   const [formData, setFormData] = useState({})
   const [searchQuery, setSearchQuery] = useState("")
   const [searchData, setSearchData] = useState([])
-  const [loggedIn, setLoggedIn] = useState()
+  const [authorized, setAuthorized] = useState()
 
-  useEffect(() => {
-    if(localStorage.token){
-      const token = localStorage.token
-      fetch("http://localhost:8000/login", {
+  function logout(){
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    setAuthorized(false)
+    fetch("http://localhost:8000/authorize", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user: localStorage.user,
+        token: localStorage.token
+      })
+    })
+      .then(res => {
+        // window.location = "/"
+      })
+    
+
+  }
+
+  function validateToken(){
+    if(localStorage.token && localStorage.user) {
+      fetch("http://localhost:8000/authorize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ token: token })
+        body: JSON.stringify({
+          token: localStorage.token,
+          user: localStorage.user
+        })
       })
-        .then(res => res.json())
-        .then(json => {
-          if(json.message == "Token invalid"){
-            localStorage.removeItem("token")
-            return
+        .then(res => {
+          if(res.ok){
+            setAuthorized(true)
+          } else {
+            setAuthorized(false)
           }
-          //TODO: take user id and put it in localstorage
         })
     }
-  }, [])
+  }
+
+  validateToken()
 
   return (
     <>
       <div className="background"/>
       <div className="main">
         <div className="content">
-          <div className="nav">
-            <div className="nav-item">library</div>
-            <div className="nav-item">search</div>
-            <div className="nav-item">logout</div>
-          </div>
           <BrowserRouter>
+            <div className="nav">
+
+              {authorized && (
+                <>
+                  <Link className="nav-item" to={`/library?user=${localStorage.user}`}>
+                    <div >library</div>
+                  </Link>
+                  <Link className="nav-item" to={`/search`}>
+                    <div>search</div>
+                  </Link>
+                  <div onClick={logout} className="nav-item">logout</div>
+                </>
+
+              )}
+              {!authorized && (
+                <Link className="nav-item" to={`/login`}>
+                  <div >login</div>
+                </Link>
+              )}
+            </div>
+          
             <Routes>
-              <Route path="/library" element={<Library property="value" />} />
+              <Route path="/library" element={<Library authorized={authorized} />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/game" element={<Game />} />
+              <Route path="/game" element={<Game validateToken={validateToken} authorized={authorized} />} />
               <Route path="/login" element={<Login />} />
             </Routes>
           </BrowserRouter>
