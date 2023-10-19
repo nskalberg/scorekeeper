@@ -15,7 +15,7 @@ function Library(props){
     const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
 
     useEffect(() => {
-        fetch(`${window.location.href}/api/library`, {
+        fetch(`${window.location.origin}/api/library`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -19,7 +19,7 @@ function App() {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
     setAuthorized(false)
-    fetch(`${window.location.href}/api/authorize`, {
+    fetch(`${window.location.origin}/api/authorize`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -38,7 +38,7 @@ function App() {
 
   function validateToken(){
     if(localStorage.token && localStorage.user) {
-      fetch(`${window.location.href}/api/authorize`, {
+      fetch(`${window.location.origin}/api/authorize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
