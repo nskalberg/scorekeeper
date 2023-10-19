@@ -50,7 +50,7 @@ function Game(props) {
     }, [scoreData])
 
     function getScoreData() {
-      fetch("http://localhost:8000/game", {
+      fetch(`${window.location.origin}/api/game`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -72,7 +72,7 @@ function Game(props) {
         document.getElementById("add-score-content").style.transform = "scale(1)"
         document.getElementById("add-score").style.height = "auto"
       } else {
-        fetch("http://localhost:8000/score", {
+        fetch(`${window.location.origin}/api/score`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

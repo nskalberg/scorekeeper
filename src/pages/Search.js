@@ -15,7 +15,7 @@ function Search(){
 
     function handleSearch(e){
         e.preventDefault()
-        fetch("http://localhost:8000/search", {
+        fetch(`${window.location.origin}/api/search`, {
             method: "POST",
             headers: {
             "Content-Type": "application/json"
