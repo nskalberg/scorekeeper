@@ -21,7 +21,7 @@ function generateToken(n) {
   return token;
 }
 
-app.post("/authorize", async (req, res) => {
+app.post("/api/authorize", async (req, res) => {
   const {token, user} = req.body
   const tokens = JSON.parse(fs.readFileSync(tokenData))
 
@@ -40,7 +40,7 @@ app.post("/authorize", async (req, res) => {
 
 })
 
-app.delete("/authorize", async (req, res) => {
+app.delete("/api/authorize", async (req, res) => {
   const {token, user} = req.body
   const tokens = JSON.parse(fs.readFileSync(tokenData))
   var index, result
@@ -63,7 +63,7 @@ app.delete("/authorize", async (req, res) => {
   res.send("Token deleted")
 })
 
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const {username, password, token} = req.body
 
   const data =  JSON.parse(fs.readFileSync(userData))
@@ -104,7 +104,7 @@ app.post("/login", async (req, res) => {
 
 })
 
-app.post("/game", (req, res) => {
+app.post("/api/game", (req, res) => {
   const data = JSON.parse(fs.readFileSync(filepath));
   var response = {
     scores: []
@@ -129,7 +129,7 @@ app.post("/game", (req, res) => {
 
 })
 
-app.post("/library", async (req, res) => {
+app.post("/api/library", async (req, res) => {
   var result = []
   var response = []
 
@@ -163,7 +163,7 @@ app.post("/library", async (req, res) => {
 
 })
 
-app.post("/search", (req, res) => {
+app.post("/api/search", (req, res) => {
   
   const result = []
   const titleData = JSON.parse(fs.readFileSync(titleDataPath));
@@ -213,7 +213,7 @@ app.get('/*', function(req, res) {
   })
 })
 
-app.post("/score", (req, res) => {
+app.post("/api/score", (req, res) => {
 
   const data = JSON.parse(fs.readFileSync(filepath));
   const tokens = JSON.parse(fs.readFileSync(tokenData))

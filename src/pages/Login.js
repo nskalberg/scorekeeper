@@ -9,7 +9,7 @@ function Login(){
     const [loginError, setLoginError] = useState(false)
 
     function handleLogin() {
-        fetch("http://localhost:8000/login", {
+        fetch(`${window.location.href}/api/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
