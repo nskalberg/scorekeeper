@@ -4,10 +4,10 @@ import HighchartsReact from 'highcharts-react-official';
 
 function Game(props) {
     
+    const date = new Date()
+    const today = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
 
     const {authorized, validateToken} = props
-
-    console.log(`Authorized: ${authorized}`)
 
     var search = window.location.search.substring(1);
     const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')  
@@ -16,28 +16,37 @@ function Game(props) {
     const [scoreData, setScoreData] = useState([])
     const [formData, setFormData] = useState({
       user: params.user,
-      game: params.id
+      game: params.id,
+      date: today
     })
     const [chartData, setChartData] = useState([])
 
     useEffect(() => {
       let result = []
-      const scoreDataSorted = scoreData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date) || parseInt(b.score) - parseInt(a.score))
+      var scoreDataSorted = scoreData
+      scoreDataSorted.sort((a, b) => Date.parse(a.date) - Date.parse(b.date) || parseInt(b.score) - parseInt(a.score))
       for(var i = 0; i < scoreDataSorted.length; i++){
         if(!result[0] || result[result.length-1][0] !== Date.parse(scoreDataSorted[i].date)){
           
           result.push([Date.parse(scoreDataSorted[i].date), parseInt(scoreDataSorted[i].score)])
         }
       }
-      setChartData(result)
+      setChartData(prevChartData => ({
+        ...prevChartData,
+        chronological: result
+      }))
       var runningHighScore = 0
       var runningHighScoreArray = []
       result.map(score => {
         if(score[1] > runningHighScore){
           runningHighScore = score[1] // TODO FINISH THIS
         }
-        runningHighScoreArray.push(score[0, runningHighScore])
+        runningHighScoreArray.push([score[0], runningHighScore])
       })
+      setChartData(prevChartData => ({
+        ...prevChartData,
+        runningMax: runningHighScoreArray
+      }))
     }, [scoreData])
 
     function getScoreData() {
@@ -51,16 +60,17 @@ function Game(props) {
           .then(res => res.json())
           .then(json => {
               setGameData(json.gameData)
-              setScoreData(json.scores)
+              setScoreData(json.scores)             
           })
     }
 
     function handleAddScore(e) {  
+      
       if(e.target.name == "initiate"){
         e.target.style.display = "none"
         e.target.style.height = "0px"
-        document.getElementById("add-score").style.height = "100px"
         document.getElementById("add-score-content").style.transform = "scale(1)"
+        document.getElementById("add-score").style.height = "auto"
       } else {
         fetch("http://localhost:8000/score", {
           method: "POST",
@@ -71,11 +81,19 @@ function Game(props) {
           })
         })
           .then(() => {
+            setFormData(prevFormData => ({
+              ...prevFormData,
+              score: "",
+              attempt: "",
+              location: "",
+              date: today
+            }))
             getScoreData()
             document.getElementById("add-score").style.height = "50px"
             document.getElementById("add-score-content").style.transform = "scale(0)"
-            document.getElementById("initiateScore").style.display = "flex";
+            
             setTimeout(() => {
+              document.getElementById("initiateScore").style.display = "flex";
               document.getElementById("initiateScore").style.height = "36px";
             }, 500)
           })
@@ -105,9 +123,8 @@ function Game(props) {
     }
 
     const highScore = () => Math.max(...scoreData.map(data => parseInt(data.score)))
-    console.log(highScore())
 
-    const scoreTableElements = scoreData.map((row) => {
+    const scoreTableElements = scoreData.slice().reverse().map((row) => {
         return (
           <tr>
             <td>{row.date}</td>
@@ -120,7 +137,7 @@ function Game(props) {
 
       const options = {
         chart: {
-          type: 'line',
+          type: 'area',
           backgroundColor: 'transparent'
         },
         title: {
@@ -148,10 +165,40 @@ function Game(props) {
           enabled: false
         },
         series: [
+          { 
+            fillColor: {
+              linearGradient: {
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 1
+              },
+              stops: [
+                  [0, 'white'],
+                  [1, "transparent"]
+              ]
+          },
+            lineWidth: 3,
+            color: "white",
+            data: chartData.runningMax,
+            shadow: true
+          },
           {
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 1
+              },
+              stops: [
+                  [0, '#e71d36'],
+                  [1, "transparent"]
+              ]
+            },
             lineWidth: 3,
             color: "#e71d36",
-            data: chartData,
+            data: chartData.chronological,
             shadow: true
           }
         ]
@@ -170,18 +217,19 @@ function Game(props) {
                 <button id="initiateScore" name="initiate" onClick={handleAddScore} className="add-score-button">add score</button>
                 <div id="add-score-content" className="add-score-content">
                   <div className="add-score-inputs">
-                    <input onChange={handleChange} placeholder="score" className="add-score-game" name="score"></input>
-                    <input onChange={handleChange} placeholder="date" className="add-score-game" name="date"></input>
-                    <input onChange={handleChange} placeholder="attempt" className="add-score-game" name="attempt"></input>
+                    <input onChange={handleChange} value={formData.score} placeholder="score" className="add-score-game" name="score"></input>
+                    <input onChange={handleChange} value={formData.location} placeholder="location" className="add-score-game" name="location"></input>
+                    <input onChange={handleChange} value={formData.attempt} placeholder="attempt" className="add-score-game" name="attempt"></input>
+                    <input onChange={handleChange} value={formData.date} placeholder="date" className="add-score-game" name="date"></input>
                   </div>
-                  <button id="finalizeScore" name="finalize" onClick={handleAddScore} className="add-score-button"></button>
+                  <button id="finalizeScore" name="finalize" onClick={handleAddScore} className="add-score-button">add score</button>
                 </div>
               </div>
             )}
             <div className="banner-group">
               <div className="banner half">
                 <div className="high-score">
-                  {highScore()}
+                <div className="maintext">{highScore()}</div>
                   <div className="subtext">
                     high score
                   </div>
@@ -189,7 +237,7 @@ function Game(props) {
               </div>
               <div className="banner half">
                 <div className="average-score">
-                  {averageScore()}
+                  <div className="maintext">{averageScore()}</div>
                   <div className="subtext">
                     average
                   </div>

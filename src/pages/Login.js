@@ -1,6 +1,9 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 function Login(){
+
+    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({})
     const [loginError, setLoginError] = useState(false)
@@ -26,7 +29,8 @@ function Login(){
                 localStorage.token = json.token
                 localStorage.user = json.id
                 if(!localStorage.redirect){
-                    window.location.href = `http://localhost:3000/library?user=${json.id}`
+                    window.location.reload()
+                    window.location.href = `/library?user=${json.id}`
                 }
             })
             .catch(error => {

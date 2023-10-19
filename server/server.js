@@ -3,6 +3,7 @@ const cors = require("cors");
 const levenshtein = require("js-levenshtein")
 const app = express();
 const fs = require('fs');
+const path = require("path");
 const filepath = './data/data.json';
 const titleDataPath = './data/csvjson.json'
 const tokenData = './data/tokens.json'
@@ -202,7 +203,18 @@ app.post("/search", (req, res) => {
   compileResult()
 })
 
+app.use(express.static(path.join(__dirname, "..", "build")));
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../build/index.html'), function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+})
+
 app.post("/score", (req, res) => {
+
   const data = JSON.parse(fs.readFileSync(filepath));
   const tokens = JSON.parse(fs.readFileSync(tokenData))
 
