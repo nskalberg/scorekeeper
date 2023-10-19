@@ -233,6 +233,8 @@ app.post("/score", (req, res) => {
   res.send({ message: "Not authorized"})
 });
 
-app.listen(8000, () => {
-  console.log(`Server is running on port 8000.`);
+var port = process.env.PORT || 3000;
+
+app.listen(port, function() {
+  console.log("Node app is running at localhost:" + app.get('port'))
 });
