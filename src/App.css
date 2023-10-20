@@ -105,14 +105,14 @@ input {
 }
 
 .game-title {
-  font-size: 22px;
+  font-size: 18px;
   color: white;
   margin: 10px;
   margin-right: auto;
 }
 
 .game-year {
-  font-size: 22px;
+  font-size: 18px;
   color: white;
   margin: 10px;
 }
@@ -210,6 +210,7 @@ h1 {
 }
 
 .add-score-button {
+  color: black;
   cursor: pointer;
   background-color: #e71d36;
   border-radius: 10px;
@@ -221,7 +222,7 @@ h1 {
   margin: 5px;
   transition: 0.5s;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 14px;
   align-items: center;
   justify-content: center;
 }
@@ -351,4 +352,8 @@ button {
 
 .highcharts-credits {
   display:none
+}
+
+a {
+  text-decoration: none;
 }

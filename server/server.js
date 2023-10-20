@@ -186,7 +186,7 @@ app.post("/api/search", (req, res) => {
             result.push({
               ...title,
               manufacturer: data.manufacturer,
-              marquee: data.url_image_marquee,
+              marquee: data.url_image_marquee.replace(/https/g, "http"),
               year: data.year
             })
           }

@@ -39,7 +39,7 @@ function Game(props) {
       var runningHighScoreArray = []
       result.map(score => {
         if(score[1] > runningHighScore){
-          runningHighScore = score[1] // TODO FINISH THIS
+          runningHighScore = score[1]
         }
         runningHighScoreArray.push([score[0], runningHighScore])
       })
